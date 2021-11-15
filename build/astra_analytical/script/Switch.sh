@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-workload=medium_DLRM
+# workload=medium_DLRM
+workload=DLRM_HybridParallel.txt
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
@@ -12,7 +13,7 @@ INPUT_DIR=${PROJECT_DIR}/inputs
 COMPILE_SCRIPT="${SCRIPT_DIR:?}"/../build.sh
 BINARY="${SCRIPT_DIR:?}"/../build/AnalyticalAstra/bin/AnalyticalAstra
 NETWORK=${INPUT_DIR}/network/analytical/sample_Switch.json
-SYSTEM=${INPUT_DIR}/system/sample_a2a_sys
+SYSTEM=${INPUT_DIR}/system/sample_a2a_sys.txt
 WORKLOAD=${INPUT_DIR}/workload/"$workload"
 STATS="${SCRIPT_DIR:?}"/../result/switch-${1:-result}
 

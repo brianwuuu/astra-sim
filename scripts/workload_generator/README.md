@@ -14,7 +14,7 @@ The `gen_astrasim_workload_input.py` can be run to generate the workload input f
   - *HYBRID_MODEL_DATA*: model-parallelism between packages and data-parallelism within package
   - *HYBRID_CUSTOMIZED*: customized parallelism for each layer, see [mnk input file format](#customized-parallelisms-for-each-layer)
 
-- `run_name`: the folder name that holds the genreated output from SCALE-Sim
+- `run_name`: the folder name that holds the generated output from SCALE-Sim
 - `scalesim_config`: path to a SCALE-Sim config file
 - `scalesim_path`: path to the SCALE-Sim folder
 

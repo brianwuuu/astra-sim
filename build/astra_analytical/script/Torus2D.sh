@@ -12,7 +12,7 @@ INPUT_DIR=${PROJECT_DIR}/inputs
 COMPILE_SCRIPT="${SCRIPT_DIR:?}"/../build.sh
 BINARY="${SCRIPT_DIR:?}"/../build/AnalyticalAstra/bin/AnalyticalAstra
 NETWORK=${INPUT_DIR}/network/analytical/sample_Torus2D.json
-SYSTEM=${INPUT_DIR}/system/sample_torus_sys
+SYSTEM=${INPUT_DIR}/system/sample_torus_sys.txt
 WORKLOAD=${INPUT_DIR}/workload/"$workload"
 STATS="${SCRIPT_DIR:?}"/../result/torus-${1:-result}
 
