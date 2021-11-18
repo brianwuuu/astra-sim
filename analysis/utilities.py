@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from collections import defaultdict
 
 # Plotting related
-mark_cycle = ['d', '+', 's', 'x','v','1', 'p']
+mark_cycle = ['d', '+', 's', 'x','v','1', 'p', ".", "o", "^", "<", ">", "1", "2", "3", "8", "P"]
 markersize_arg = 4
 
 def parseJSON(filename):
@@ -48,11 +48,24 @@ def readBackendEndToEndFile(filename):
             file_dict[layer] = stats
     return file_fields, file_dict
 
+def readDimensionUtilizationFile(filename):
+    file_fields = ["Time", "Dim1_util"]
+    time = []
+    dim1_util = []
+    with open(filename, "r") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=",")
+        for i, row in enumerate(csv_reader):
+            if i != 0 and row[0] != "": 
+                time.append(float(row[0]))
+                dim1_util.append(float(row[1]))
+    file_dict = {"Time":time, "Dim1_util":dim1_util}
+    return file_fields, file_dict    
+
 ################################################################################################################
 ####################################    PLOTTING FUNCTIONS    ##################################################
 ################################################################################################################
 
-def plotMultiLineChart(x, y, log=False, path=None):
+def plotMultiLineChart(x, y, log=False, path=""):
     print("[ANALYSIS] Plotting multiline chart to " + path)
     for parameter, marker_arg in zip(y["data"].keys(), mark_cycle):
         plt.plot(x["data"], (np.log10(y["data"][parameter]) if log else y["data"][parameter]), label=parameter, marker=marker_arg)
@@ -65,7 +78,25 @@ def plotMultiLineChart(x, y, log=False, path=None):
     else: plt.show()
     plt.close()
 
-def plotLineChart(x, y, log=False, path=None):
+def plotMultiLineChartDifferentLength(x, y, log=False, path=""):
+    print("[ANALYSIS] Plotting multiline chart to " + path)
+    fig, ax = plt.subplots()
+    max_x = 0
+    for parameter, marker_arg in zip(y["data"].keys(), mark_cycle):
+        ax.plot(x["data"][parameter], (np.log10(y["data"][parameter]) if log else y["data"][parameter]), label=parameter, marker=marker_arg)
+        max_x = max(max_x, max(x["data"][parameter]))
+    plt.xlabel(x["label"])
+    plt.ylabel(("Log " if log else "" )+ y["label"])
+    plt.title(y["label"] + " vs " + x["label"])
+    plt.xticks(np.arange(0,max_x,100), fontsize=8) # rotation="45"
+    plt.yticks(np.arange(0,140,10), fontsize=5)
+    ax.legend(loc="upper center", ncol=5, shadow=True, fontsize='x-small')
+    fig.set_size_inches(10, 5)
+    if path and not os.path.isfile(path): plt.savefig(path)
+    else: plt.show()
+    plt.close()
+
+def plotLineChart(x, y, log=False, path=""):
     print("[ANALYSIS] Plotting line chart to" + path)
     plt.plot(x["data"], [np.log10(x) for x in y["data"].values()] if log else y["data"].values(), marker="p")
     plt.xlabel(x["label"])
@@ -75,7 +106,6 @@ def plotLineChart(x, y, log=False, path=None):
     if path and not os.path.isfile(path): plt.savefig(path)
     else: plt.show()
     plt.close()
-
 
 def plotMultiColBarChart(x, y, log=False, path=""):
     print("[ANALYSIS] Plotting bar chart for " + y["label"] + " vs " + x["label"])

@@ -17,7 +17,7 @@ SCRIPT_DIRECTORY = ANALYTICAL_DIRECTORY + "/script/"
 ################################################################################################################
 ################################################################################################################
 # FILE SETUP
-workload = "MLP_ModelParallel" # microAllReduce
+workload = "MLP_ModelParallel" # microAllReduce, MLP_ModelParallel, Resnet50_DataParallel
 topology_type = "switch"
 experiment = "hbmBandwidth"
 experiment_directory = RESULT_DIRECTORY + "{}-{}-{}/".format(topology_type, workload, experiment)
@@ -51,7 +51,6 @@ def analyzeEndToEnd():
         for param_2 in params_2[1]:
             job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_1[0], param_1, params_2[0], param_2)
             jct_stats["{} GPUs".format(param_1)].append(float(file_dict[layer][job_name][parameter_index]))
-    print(jct_stats)
     x_bw = {"label": params_2[2], "data": params_2[1]}
     y_jct = {"label": "Job Completion Time (ns)", "data": jct_stats}
     path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-JCT-{}.png".format(topology_type, workload, params_2[0])
@@ -67,17 +66,33 @@ def analyzeBackendEndToEnd():
             for param_2 in params_2[1]:
                 job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_1[0], param_1, params_2[0], param_2)
                 jct_stats["{} GPUs_{}".format(param_1, metric)].append(float(file_dict[job_name][metric_index]))
-        # print(jct_stats)
     x_bw = {"label": params_2[2], "data": params_2[1]}
     y_jct = {"label": "Time in (ns)", "data": jct_stats}
     path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-CommTime-{}.png".format(topology_type, workload, params_2[0])
     utils.plotMultiLineChart(x_bw, y_jct, log=False, path=path)
 
+def analyzeDimensionUtilization():
+    util_stats = defaultdict(list)
+    time_stats = defaultdict(list)
+    for param_1 in params_1[1]:
+        for param_2 in params_2[1]:
+            job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_1[0], param_1, params_2[0], param_2)
+            print(job_name)
+            file_name = experiment_directory + job_name + "_dimension_utilization.csv"
+            file_fields, file_dict = utils.readDimensionUtilizationFile(file_name)
+            param_label = "{}GPUs,{}GB/s".format(param_1,param_2)
+            time_stats[param_label], util_stats[param_label] = file_dict[file_fields[0]], file_dict[file_fields[1]]
+    x_time = {"label": "Time (ns)", "data": time_stats}
+    y_util = {"label": "Link Utilization (%)", "data": util_stats}
+    path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-Utilization-{}.png".format(topology_type, workload, params_2[0])
+    utils.plotMultiLineChartDifferentLength(x_time, y_util, log=False, path=path)
+
 def main():
     print("[ANALYSIS] Starting analysis ...")
     print("[ANALYSIS] Workload: {}, Topology Type: {}".format(workload, topology_type))
     # analyzeEndToEnd()
-    analyzeBackendEndToEnd()
+    # analyzeBackendEndToEnd()
+    analyzeDimensionUtilization()
 
 if __name__ == '__main__':
     main()
