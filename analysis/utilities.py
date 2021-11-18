@@ -15,10 +15,10 @@ def parseJSON(filename):
     return file
 
 def readEndToEndFile(filename):
-    file_fields =    ["fwd_compute", "wg_compute", "ig_compute", 
-                "fwd_exposed_comm", "wg_exposed_comm", "ig_exposed_comm",
-                "fwd_total_comm", "wg_total_comm", "ig_total_comm",
-                "workload_finished_at", "total_comp", "total_exposed_comm"]
+    file_fields =  ["fwd_compute", "wg_compute", "ig_compute", 
+                    "fwd_exposed_comm", "wg_exposed_comm", "ig_exposed_comm",
+                    "fwd_total_comm", "wg_total_comm", "ig_total_comm",
+                    "workload_finished_at", "total_comp", "total_exposed_comm"]
     file_dict = {}
     with open(filename, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",")
@@ -32,22 +32,38 @@ def readEndToEndFile(filename):
             file_dict[layer][job] = stats
     return file_fields, file_dict
 
+def readBackendEndToEndFile(filename):
+    file_fields =  ["CommsTime", "ComputeTime", "ExposedCommsTime", 
+                    "Cost", "TotalPayloadSize", "PayloadSize_Dim0",
+                    "PayloadSize_Dim1", "PayloadSize_Dim2", "PayloadSize_Dim3",
+                    "PayloadSize_Dim4", "PayloadSize_Dim5", "PayloadSize_Dim6"]
+    file_dict = {}
+    with open(filename, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=",")
+        layer = ""
+        for i, row in enumerate(csv_reader):
+            if i == 0: continue  # ignore the header row
+            if row[0] != "": layer = row[0]
+            stats = [float(x) for x in row[1:13] if x != ""]
+            file_dict[layer] = stats
+    return file_fields, file_dict
+
 ################################################################################################################
 ####################################    PLOTTING FUNCTIONS    ##################################################
 ################################################################################################################
 
 def plotMultiLineChart(x, y, log=False, path=None):
-    print("[ANALYSIS] Plotting line chart to " + path)
-    for transport, marker_arg in zip(y["data"].keys(), mark_cycle):
-        plt.plot(x["data"], (np.log10(y["data"][transport]) if log else y["data"][transport]), label=transport, marker=marker_arg)
+    print("[ANALYSIS] Plotting multiline chart to " + path)
+    for parameter, marker_arg in zip(y["data"].keys(), mark_cycle):
+        plt.plot(x["data"], (np.log10(y["data"][parameter]) if log else y["data"][parameter]), label=parameter, marker=marker_arg)
     plt.xlabel(x["label"])
     plt.ylabel(("Log " if log else "" )+ y["label"])
     plt.title(y["label"] + " vs " + x["label"])
     plt.xticks(x["data"], fontsize=6) # rotation="45"
     plt.legend()
-    plt.show()
-    # if not os.path.isfile(path): plt.savefig(path)
-    # plt.close()
+    if path and not os.path.isfile(path): plt.savefig(path)
+    else: plt.show()
+    plt.close()
 
 def plotLineChart(x, y, log=False, path=None):
     print("[ANALYSIS] Plotting line chart to" + path)
@@ -56,9 +72,9 @@ def plotLineChart(x, y, log=False, path=None):
     plt.ylabel("Log " if log else "" + y["label"])
     plt.title(y["label"] + " vs " + x["label"], fontsize=12)
     plt.xticks(x["data"], fontsize=6) # rotation="45"
-    plt.show()
-    # if not os.path.isfile(path): plt.savefig(path)
-    # plt.close()
+    if path and not os.path.isfile(path): plt.savefig(path)
+    else: plt.show()
+    plt.close()
 
 
 def plotMultiColBarChart(x, y, log=False, path=""):
