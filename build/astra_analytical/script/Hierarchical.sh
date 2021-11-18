@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-workload=medium_DLRM
+workload=example_DATA.txt
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
@@ -12,7 +12,7 @@ INPUT_DIR=${PROJECT_DIR}/inputs
 COMPILE_SCRIPT="${SCRIPT_DIR:?}"/../build.sh
 BINARY="${SCRIPT_DIR:?}"/../build/AnalyticalAstra/bin/AnalyticalAstra
 NETWORK=${INPUT_DIR}/network/analytical/sample_Hierarchical.json
-SYSTEM=${INPUT_DIR}/system/sample_3dim_sys
+SYSTEM=${INPUT_DIR}/system/sample_3dim_sys.txt
 WORKLOAD=${INPUT_DIR}/workload/"$workload"
 STATS="${SCRIPT_DIR:?}"/../result/hierarchical-${1:-result}
 

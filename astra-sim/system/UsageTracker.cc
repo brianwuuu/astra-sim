@@ -55,6 +55,7 @@ std::list<std::pair<uint64_t, double>> UsageTracker::report_percentage(
   "<<u.level<<std::endl;
   }*/
   Tick total_activity_possible = (this->levels - 1) * cycles;
+  std::cout << "total activity possible: " << total_activity_possible << std::endl;
   std::list<Usage>::iterator usage_pointer = this->usage.begin();
   Tick current_activity = 0;
   Tick period_start = 0;
@@ -68,6 +69,7 @@ std::list<std::pair<uint64_t, double>> UsageTracker::report_percentage(
         std::min(static_cast<uint64_t>(period_end), current_usage.end);
     assert(begin <= end);
     current_activity += ((end - begin) * current_usage.level);
+    // std::cout << "current activity: " << current_activity << std::endl;
     if (current_usage.end >= period_end) {
       result.push_back(std::make_pair(
           (uint64_t)period_end,

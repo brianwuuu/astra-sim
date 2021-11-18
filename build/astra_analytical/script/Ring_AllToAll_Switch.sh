@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-workload=medium_DLRM
+# workload=medium_DLRM
+workload=example_DATA.txt
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
