@@ -17,7 +17,7 @@ SCRIPT_DIRECTORY = ANALYTICAL_DIRECTORY + "/script/"
 ################################################################################################################
 ################################################################################################################
 # FILE SETUP
-workload = "MLP_ModelParallel" # microAllReduce, MLP_ModelParallel, Resnet50_DataParallel
+workload = "MLP_ModelParallel" # microAllReduce, MLP_ModelParallel, Resnet50_DataParallel, Transformer_HybridParallel
 topology_type = "switch"
 experiment = "hbmBandwidth"
 experiment_directory = RESULT_DIRECTORY + "{}-{}-{}/".format(topology_type, workload, experiment)
@@ -29,11 +29,11 @@ end_to_end_file = experiment_directory + "EndToEnd.csv"
 ################################################################################################################
 
 # Simulation Parameter setup
-npus = [16, 64] # 128, 256, 512
-hbmbandwidths = [16, 32, 64, 128, 256, 512, 1024, 2048]
-hbmlatencies = [100, 1000, 10000]
-linklatencies = [100, 500, 1000, 5000, 10000]
-linkbandwidths = (50, 100, 200, 300, 500, 1000)
+npus = [16, 64] # 16, 64, 128, 256, 512
+hbmbandwidths = [16, 64, 256, 512] # 16, 32, 64, 128, 256, 512, 1024, 2048
+hbmlatencies = [100, 1000, 10000] # 100, 1000, 10000
+linklatencies = [100, 500, 1000, 5000, 10000] # 100, 500, 1000, 5000, 10000
+linkbandwidths = [50, 100, 200, 300, 500, 1000] # 50, 100, 200, 300, 500, 1000
 params_1 = ("npus", npus)
 # params_2 = ("hbmLatency", hbmlatencies, "HBM Latencies (ns)")
 params_2 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
@@ -42,7 +42,7 @@ params_2 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
 
 
 def analyzeEndToEnd():
-    layer = "layer_64_1_mlp0"
+    layer = "layer_64_1_mlp0" # layer_64_1_mlp0
     parameter = "workload_finished_at"
     file_fields, file_dict = utils.readEndToEndFile(end_to_end_file)
     parameter_index = file_fields.index(parameter)
@@ -77,7 +77,6 @@ def analyzeDimensionUtilization():
     for param_1 in params_1[1]:
         for param_2 in params_2[1]:
             job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_1[0], param_1, params_2[0], param_2)
-            print(job_name)
             file_name = experiment_directory + job_name + "_dimension_utilization.csv"
             file_fields, file_dict = utils.readDimensionUtilizationFile(file_name)
             param_label = "{}GPUs,{}GB/s".format(param_1,param_2)
@@ -90,9 +89,9 @@ def analyzeDimensionUtilization():
 def main():
     print("[ANALYSIS] Starting analysis ...")
     print("[ANALYSIS] Workload: {}, Topology Type: {}".format(workload, topology_type))
-    # analyzeEndToEnd()
+    analyzeEndToEnd()
     # analyzeBackendEndToEnd()
-    analyzeDimensionUtilization()
+    # analyzeDimensionUtilization()
 
 if __name__ == '__main__':
     main()

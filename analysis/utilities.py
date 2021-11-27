@@ -50,8 +50,7 @@ def readBackendEndToEndFile(filename):
 
 def readDimensionUtilizationFile(filename):
     file_fields = ["Time", "Dim1_util"]
-    time = []
-    dim1_util = []
+    time, dim1_util = [], []
     with open(filename, "r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",")
         for i, row in enumerate(csv_reader):
@@ -88,7 +87,7 @@ def plotMultiLineChartDifferentLength(x, y, log=False, path=""):
     plt.xlabel(x["label"])
     plt.ylabel(("Log " if log else "" )+ y["label"])
     plt.title(y["label"] + " vs " + x["label"])
-    plt.xticks(np.arange(0,max_x,100), fontsize=8) # rotation="45"
+    plt.xticks(np.arange(0,max_x,int(max_x/10)), fontsize=8) # rotation="45"
     plt.yticks(np.arange(0,140,10), fontsize=5)
     ax.legend(loc="upper center", ncol=5, shadow=True, fontsize='x-small')
     fig.set_size_inches(10, 5)
@@ -114,11 +113,13 @@ def plotMultiColBarChart(x, y, log=False, path=""):
     width = 0.2
     plt.figure(figsize=(15,5))
     for i, parameter in enumerate(y["data"].keys()):
+        print(ind+i*width)
         plt.bar(ind+i*width, np.log10(y["data"][parameter]) if log else y["data"][parameter], label=parameter, width=width)
     plt.xlabel(x["label"])
     plt.ylabel("Log " if log else "" + y["label"])
     plt.title(y["label"] + " vs " + x["label"])
-    plt.xticks(ind+(num_pairs*width)/2, x["data"], fontsize=6) # rotation="45"
+    print(ind+(len(y["data"].keys())*width)/2)
+    plt.xticks(ind+(len(y["data"].keys())*width)/4, x["data"], fontsize=6) # rotation="45"
     plt.legend()
     if path and not os.path.isfile(path): plt.savefig(path)
     else: plt.show()

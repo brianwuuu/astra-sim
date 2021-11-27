@@ -4,7 +4,8 @@ set -e
 # workload=medium_DLRM
 # workload=microAllReduce
 # workload=MLP_ModelParallel
-workload=Resnet50_DataParallel
+# workload=Resnet50_DataParallel
+workload=Transformer_HybridParallel
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
@@ -28,7 +29,7 @@ echo "[SCRIPT] Compiling AnalyticalAstra"
 "${COMPILE_SCRIPT}" -c
 
 npus=(16 64) #  64
-hbmbandwidth=(16 32 64 128 256 512 1024 2048)
+hbmbandwidth=(512) # 16 32 64 128 256 512 1024 2048
 # hbmlatency=(100 1000 10000)
 # linkbandwidth=(50 100 200 300 500 1000)
 # linklatency=(100 500 1000 5000 10000)
