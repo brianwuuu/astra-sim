@@ -12,8 +12,8 @@ PROJECT_DIR="${SCRIPT_DIR:?}"/../../..
 INPUT_DIR=${PROJECT_DIR}/inputs
 COMPILE_SCRIPT="${SCRIPT_DIR:?}"/../build.sh
 BINARY="${SCRIPT_DIR:?}"/../build/AnalyticalAstra/bin/AnalyticalAstra
-NETWORK=${INPUT_DIR}/network/analytical/sample_Ring_AllToAll_Switch.json
-SYSTEM=${INPUT_DIR}/system/sample_3dim_sys
+NETWORK=${INPUT_DIR}/network/analytical/sample_Ring_FullyConnected_Switch.json
+SYSTEM=${INPUT_DIR}/system/sample_3dim_sys.txt
 WORKLOAD=${INPUT_DIR}/workload/"$workload"
 STATS="${SCRIPT_DIR:?}"/../result/ring-alltoall-switch-${1:-result}
 
@@ -25,7 +25,7 @@ mkdir -p "${STATS}"
 echo "[SCRIPT] Compiling AnalyticalAstra"
 "${COMPILE_SCRIPT}" -c
 
-nodes=(2 4 8 16 32 64 128)
+nodes=(2 128)
 commScale=(1)
 
 current_row=-1

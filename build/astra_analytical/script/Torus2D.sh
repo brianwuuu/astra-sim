@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-# workload=medium_DLRM
-workload=DLRM_HybridParallel.txt
+workload=example_DATA.txt
+# workload=DLRM_HybridParallel.txt
+# workload=Resnet50_DataParallel.txt
 
 
 # Absolue path to this script
@@ -27,7 +28,7 @@ echo "[SCRIPT] Compiling AnalyticalAstra"
 "${COMPILE_SCRIPT}" -c
 
 # test sets
-torus_width=(2 4 6 8 9 10 12 16 20 30 40)
+torus_width=(2 40) # 4 6 8 9 10 12 16 20 30 
 commScale=(1)
 
 current_row=-1

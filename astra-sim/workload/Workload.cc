@@ -75,6 +75,7 @@ Workload::Workload(
   }
 }
 void Workload::initialize_stat_files() {
+  std::cout << "what is this? " << SIZE << ", " << total_rows << std::endl;
   detailed->initialize_csv(SIZE * total_rows + 20, 50);
   end_to_end->initialize_csv(SIZE * total_rows + 20, 50);
 }

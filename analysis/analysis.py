@@ -29,14 +29,14 @@ end_to_end_file = experiment_directory + "EndToEnd.csv"
 ################################################################################################################
 
 # Simulation Parameter setup
-npus = [16, 64] # 16, 64, 128, 256, 512
-hbmbandwidths = [16, 64, 256, 512] # 16, 32, 64, 128, 256, 512, 1024, 2048
+npus = [16, 64, 128, 256, 1024] # 16, 64, 128, 256, 512
+hbmbandwidths = [16, 64, 128, 512] # 16, 32, 64, 128, 256, 512, 1024, 2048
 hbmlatencies = [100, 1000, 10000] # 100, 1000, 10000
 linklatencies = [100, 500, 1000, 5000, 10000] # 100, 500, 1000, 5000, 10000
 linkbandwidths = [50, 100, 200, 300, 500, 1000] # 50, 100, 200, 300, 500, 1000
-params_1 = ("npus", npus)
+params_2 = ("npus", npus, "Number of NPUs")
 # params_2 = ("hbmLatency", hbmlatencies, "HBM Latencies (ns)")
-params_2 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
+params_1 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
 # params_2 = ("linklatency", linklatencies, "Link Latencies (ns)")
 # params_2 = ("linkbandwidth", linkbandwidths, "Link Bandwidth (GB/s)")
 
@@ -51,25 +51,27 @@ def analyzeEndToEnd():
         for param_2 in params_2[1]:
             job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_1[0], param_1, params_2[0], param_2)
             jct_stats["{} GPUs".format(param_1)].append(float(file_dict[layer][job_name][parameter_index]))
-    x_bw = {"label": params_2[2], "data": params_2[1]}
+    x_bw = {"label": params_1[2], "data": params_1[1]}
     y_jct = {"label": "Job Completion Time (ns)", "data": jct_stats}
     path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-JCT-{}.png".format(topology_type, workload, params_2[0])
     utils.plotMultiColBarChart(x_bw, y_jct, log=False, path=path)
 
 def analyzeBackendEndToEnd():
     file_fields, file_dict = utils.readBackendEndToEndFile(backend_end_to_end_file)
-    jct_stats = defaultdict(list)
-    metrics = ["CommsTime", "ComputeTime", "ExposedCommsTime"]
+    jct_stats = defaultdict(lambda: defaultdict(list))
+    metrics = ["ComputeTime","ExposedCommsTime"]
     for metric in metrics:
         metric_index = file_fields.index(metric)
         for param_1 in params_1[1]:
             for param_2 in params_2[1]:
-                job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_1[0], param_1, params_2[0], param_2)
-                jct_stats["{} GPUs_{}".format(param_1, metric)].append(float(file_dict[job_name][metric_index]))
+                job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_2[0], param_2, params_1[0], param_1)
+                perc_value = float(file_dict[job_name][metric_index]) / float(file_dict[job_name][file_fields.index("CommsTime")])
+                jct_stats["{} GB/s".format(param_1)][metric].append(perc_value)
     x_bw = {"label": params_2[2], "data": params_2[1]}
-    y_jct = {"label": "Time in (ns)", "data": jct_stats}
-    path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-CommTime-{}.png".format(topology_type, workload, params_2[0])
-    utils.plotMultiLineChart(x_bw, y_jct, log=False, path=path)
+    y_jct = {"label": "% of Total Run Time", "data": jct_stats}
+    path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-ExposedvsComp-{}.png".format(topology_type, workload, params_1[0])
+    utils.plotMultiColStackedBarChart(x_bw, y_jct, log=False, path=path)
+    # utils.test()
 
 def analyzeDimensionUtilization():
     util_stats = defaultdict(list)
@@ -89,8 +91,8 @@ def analyzeDimensionUtilization():
 def main():
     print("[ANALYSIS] Starting analysis ...")
     print("[ANALYSIS] Workload: {}, Topology Type: {}".format(workload, topology_type))
-    analyzeEndToEnd()
-    # analyzeBackendEndToEnd()
+    # analyzeEndToEnd()
+    analyzeBackendEndToEnd()
     # analyzeDimensionUtilization()
 
 if __name__ == '__main__':
