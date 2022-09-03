@@ -29,17 +29,17 @@ end_to_end_file = experiment_directory + "EndToEnd.csv"
 ################################################################################################################
 
 # Simulation Parameter setup
-npus = [16, 64, 128, 256, 1024] # 16, 64, 128, 256, 512
-hbmbandwidths = [16, 64, 128, 512] # 16, 32, 64, 128, 256, 512, 1024, 2048
+npus = [16, 64, 128, 256] # 16, 64, 128, 256, 512
+hbmbandwidths = [16, 64, 512] # 16, 32, 64, 128, 256, 512, 1024, 2048
 hbmlatencies = [100, 1000, 10000] # 100, 1000, 10000
 linklatencies = [100, 500, 1000, 5000, 10000] # 100, 500, 1000, 5000, 10000
-linkbandwidths = [50, 100, 200, 300, 500, 1000] # 50, 100, 200, 300, 500, 1000
-params_2 = ("npus", npus, "Number of NPUs")
-# params_2 = ("hbmLatency", hbmlatencies, "HBM Latencies (ns)")
-params_1 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
-# params_2 = ("linklatency", linklatencies, "Link Latencies (ns)")
-# params_2 = ("linkbandwidth", linkbandwidths, "Link Bandwidth (GB/s)")
+linkbandwidths = [50, 100, 500, 1000] # 50, 100, 200, 300, 500, 1000
 
+# params_1 = ("hbmlatency", hbmlatencies, "Link Latencies (ns)")
+params_1 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
+# params_1 = ("linklatency", linklatencies, "Link Latencies (ns)")
+# params_1 = ("linkbandwidth", linkbandwidths, "Link Bandwidth (GB/s)")
+params_2 = ("npus", npus, "Number of NPUs")
 
 def analyzeEndToEnd():
     layer = "layer_64_1_mlp0" # layer_64_1_mlp0
@@ -65,8 +65,8 @@ def analyzeBackendEndToEnd():
         for param_1 in params_1[1]:
             for param_2 in params_2[1]:
                 job_name = "workload-{}-{}-{}-{}-{}".format(workload, params_2[0], param_2, params_1[0], param_1)
-                perc_value = float(file_dict[job_name][metric_index]) / float(file_dict[job_name][file_fields.index("CommsTime")])
-                jct_stats["{} GB/s".format(param_1)][metric].append(perc_value)
+                perc_value = float(file_dict[job_name][metric_index]) / float(file_dict[job_name][file_fields.index("CommsTime")]) * 100
+                jct_stats["{} GB/s HBM".format(param_1)][metric].append(perc_value)
     x_bw = {"label": params_2[2], "data": params_2[1]}
     y_jct = {"label": "% of Total Run Time", "data": jct_stats}
     path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-ExposedvsComp-{}.png".format(topology_type, workload, params_1[0])

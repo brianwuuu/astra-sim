@@ -126,11 +126,11 @@ def plotMultiColBarChart(x, y, log=False, path=""):
     plt.close()
 
 def plotMultiColStackedBarChart(x, y, log=False, path=""):
-    print("[ANALYSIS] Plotting nulti-stacked bar chart for " + y["label"] + " vs " + x["label"])
-    color_cycle = [("dimgray", "darkgray"), ("blue", "steelblue"), ("red", "tomato"), ("orange", "bisque")]
+    print("[ANALYSIS] Plotting multi-stacked bar chart for " + y["label"] + " vs " + x["label"])
+    color_cycle = [("dimgray", "darkgray"), ("blue", "steelblue"), ("darkgoldenrod", "goldenrod"), ("orange", "bisque"), ("red", "tomato")]
     num_pairs = len(x["data"])
     ind = np.arange(num_pairs)
-    width = 0.2
+    width = 0.15
     plt.figure(figsize=(12,5))
     for i, parameter in enumerate(y["data"].keys()): # num GPUs
         bottom = [0] * (len(x["data"]))
@@ -143,8 +143,8 @@ def plotMultiColStackedBarChart(x, y, log=False, path=""):
     plt.ylabel("Log " if log else "" + y["label"])
     plt.title(y["label"] + " vs " + x["label"])
     plt.xticks(ind+(len(y["data"].keys())*width)/4, x["data"], fontsize=6) # rotation="45"
-    plt.yticks(np.arange(0,1.25,0.1))
-    plt.legend(loc="upper center", ncol=4, shadow=True, fontsize='x-small')
+    plt.yticks(np.arange(0,125,10))
+    plt.legend(loc="upper center", ncol=3, shadow=True, fontsize='x-small')
     # if path and not os.path.isfile(path): plt.savefig(path)
     # else: plt.show()
     plt.savefig(path)

@@ -4,9 +4,9 @@ set -e
 # workload=medium_DLRM
 # workload=microAllReduce 
 # workload=example_DATA
-workload=MLP_ModelParallel
+# workload=MLP_ModelParallel
 # workload=Resnet50_DataParallel
-# workload=Transformer_HybridParallel
+workload=Transformer_HybridParallel
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
@@ -34,10 +34,10 @@ fi
 echo "[SCRIPT] Compiling AnalyticalAstra"
 "${COMPILE_SCRIPT}" -c
 
-npus=(16) # 16 64 128 256 1024
-hbmbandwidth=(16 32) # 16 32 64 128 256 512 1024 2048
+npus=(128 256 512) # 16 64 128 256 1024
+hbmbandwidth=(16 64 256) # 16 32 64 128 256 512 1024 2048
 # hbmlatency=(100 1000 10000)
-# linkbandwidth=(50 100 200 300 500 1000)
+# linkbandwidth=(50 100 500 1000)
 # linklatency=(100 500 1000 5000 10000)
 # make another for loop to iterate over hbm-bandwidth
 commScale=(1)
@@ -47,9 +47,9 @@ tot_stat_row=$((${#npus[@]} * ${#hbmbandwidth[@]}))
 
 # run test
 for npu in "${npus[@]}"; do
-  for bw in "${hbmbandwidth[@]}"; do
+  for param in "${hbmbandwidth[@]}"; do
     current_row=$(($current_row + 1))
-    filename="workload-$workload-npus-${npu}-hbmbandwidth-${bw}"
+    filename="workload-$workload-npus-${npu}-hbmbandwidth-${param}"
 
     echo "[SCRIPT] Initiate ${filename}"
 
@@ -59,7 +59,10 @@ for npu in "${npus[@]}"; do
       --workload-configuration="${WORKLOAD}" \
       --path="${STATS}/" \
       --units-count "${npu}" \
-      --hbm-bandwidth "${bw}" \
+      --hbm-bandwidth "${param}" \
+      --hbm-latency 500 \
+      --link-latency 500 \
+      --link-bandwidth 300 \
       --num-passes 1 \
       --num-queues-per-dim 1 \
       --comm-scale 1 \

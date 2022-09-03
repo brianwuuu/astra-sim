@@ -33,6 +33,17 @@ $ python3 gen_astrasim_workload_input.py \
   --scalesim_config=../../extern/compute/SCALE-Sim/configs/google.cfg \
   --scalesim_path=../../extern/compute/SCALE-Sim
 
+$ python3 gen_astrasim_workload_input.py \
+  --datatype_size=2 \
+  --mnk=mnk_inputs/example.csv \
+  --num_npus=1 \
+  --num_packages=1 \
+  --output_file=../../inputs/workload/example_DATA1.txt \
+  --parallel=DATA \
+  --run_name=example \
+  --scalesim_config=../../extern/compute/SCALE-Sim/configs/google.cfg \
+  --scalesim_path=../../extern/compute/SCALE-Sim
+
 # For customized parallelism
 $ python3 gen_astrasim_workload_input.py \
   --datatype_size=2 \

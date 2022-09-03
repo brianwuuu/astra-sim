@@ -16,3 +16,21 @@ examples/results/
 
 # JetBrains
 .idea/
+
+.gitignore
+
+# VScode
+.vscode/
+
+# Analysis output
+.analysis/output/
+*.png
+
+# Build output
+*.csv
+*.out
+*.sh
+*.txt
+*.json
+
+
