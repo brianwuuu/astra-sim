@@ -262,7 +262,7 @@ Sys::Sys(
       inp_g,
       inp_G,
       model_shared_bus,
-      communication_delay,
+      communication_delay, // endpoint-delay: 10
       true);
   workload = new Workload(
       run_name,
@@ -1366,10 +1366,18 @@ DataSet* Sys::generate_collective(
   }
   return dataset;
 }
+std::ostream& operator << (std::ostream& os, const EventType& obj)
+{
+   os << static_cast<std::underlying_type<EventType>::type>(obj);
+   return os;
+}
+
 void Sys::call_events() {
   for (auto& callable : event_queue[Sys::boostedTick()]) {
     try {
       pending_events--;
+      std::cout << "Call Events: " << std::endl;
+      std::cout << (std::get<1>(callable)) << std::endl;
       (std::get<0>(callable))
           ->call(std::get<1>(callable), std::get<2>(callable));
     } catch (...) {
@@ -1720,7 +1728,8 @@ void Sys::handleEvent(void* arg) {
   BasicEventHandlerData* ehd = (BasicEventHandlerData*)arg;
   int id = ehd->nodeId;
   EventType event = ehd->event;
-
+  std::cout << "Handle Event: " << std::endl;
+  std::cout << event << std::endl;
   if (event == EventType::CallEvents) {
     // std::cout<<"handle event triggered at node: "<<id<<" for call events! at
     // time: "<<Sys::boostedTick()<<std::endl;

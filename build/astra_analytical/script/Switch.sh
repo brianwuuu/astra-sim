@@ -2,11 +2,11 @@
 set -e
 
 # workload=medium_DLRM
-# workload=microAllReduce 
+workload=microAllReduce
 # workload=example_DATA
 # workload=MLP_ModelParallel
 # workload=Resnet50_DataParallel
-workload=Transformer_HybridParallel
+# workload=Transformer_HybridParallel
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
@@ -34,8 +34,8 @@ fi
 echo "[SCRIPT] Compiling AnalyticalAstra"
 "${COMPILE_SCRIPT}" -c
 
-npus=(128 256 512) # 16 64 128 256 1024
-hbmbandwidth=(16 64 256) # 16 32 64 128 256 512 1024 2048
+npus=(8) # 16 64 128 256 1024
+hbmbandwidth=(100) # 16 32 64 128 256 512 1024 2048
 # hbmlatency=(100 1000 10000)
 # linkbandwidth=(50 100 500 1000)
 # linklatency=(100 500 1000 5000 10000)
@@ -52,7 +52,6 @@ for npu in "${npus[@]}"; do
     filename="workload-$workload-npus-${npu}-hbmbandwidth-${param}"
 
     echo "[SCRIPT] Initiate ${filename}"
-
     nohup "${BINARY}" \
       --network-configuration="${NETWORK}" \
       --system-configuration="${SYSTEM}" \

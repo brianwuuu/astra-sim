@@ -71,8 +71,8 @@ enum class StreamState {
 enum class EventType {
   RendezvousSend,
   RendezvousRecv,
-  CallEvents,
-  PacketReceived,
+  CallEvents, // 2
+  PacketReceived, // 3
   WaitForVnetTurn,
   General,
   TX_DMA,
@@ -80,7 +80,7 @@ enum class EventType {
   Wight_Grad_Comm_Finished,
   Input_Grad_Comm_Finished,
   Fwd_Comm_Finished,
-  Wight_Grad_Comm_Finished_After_Delay,
+  Wight_Grad_Comm_Finished_After_Delay, // 11
   Input_Grad_Comm_Finished_After_Delay,
   Fwd_Comm_Finished_After_Delay,
   Workload_Wait,
@@ -89,8 +89,8 @@ enum class EventType {
   Send_Finished,
   Processing_Finished,
   Delivered,
-  NPU_to_MA,
-  MA_to_NPU,
+  NPU_to_MA, // 20
+  MA_to_NPU, // 21
   Read_Port_Free,
   Write_Port_Free,
   Apply_Boost,
@@ -101,7 +101,7 @@ enum class EventType {
   Consider_Send_Back,
   StreamInit,
   StreamsFinishedIncrease,
-  CommProcessingFinished,
+  CommProcessingFinished, // 32
   NotInitialized
 };
 class CloneInterface {

@@ -97,13 +97,26 @@ void Layer::call(EventType event, CallData* mdata) {
   int data = ((IntData*)mdata)->data;
   IntData* intData = ((IntData*)mdata);
   if (event == EventType::Wight_Grad_Comm_Finished_After_Delay) {
+    // std::cout << "Generator ID: " << generator->id << std::endl;
     if (generator->id == 0) {
       std::cout << "***** info: weight gradient collective for layer: " << id
                 << " is finished************" << std::endl;
     }
     weight_grad_datasets[data]->finish_tick += weight_grad_update_time;
+    // std::cout << "Layer ID: " << this->id << std::endl;
+    // std::cout << "Data: " << data << std::endl;
+    // std::cout << "Creation: " << weight_grad_datasets[data]->creation_tick
+    //           << std::endl;
+    // std::cout << "Finish: " << weight_grad_datasets[data]->finish_tick
+    //           << std::endl;
+    // std::cout << "weight gradient time: "
+    //           << weight_grad_datasets[data]->finish_tick -
+    //         weight_grad_datasets[data]->creation_tick
+    //           << std::endl;
     total_weight_grad_comm += weight_grad_datasets[data]->finish_tick -
         weight_grad_datasets[data]->creation_tick;
+    // std::cout << "total_weight_grad_comm: " << total_weight_grad_comm
+    //          << std::endl;
     if (weight_grad_datasets.size() == 1 &&
         wg_barrier == CollectiveBarrier::Blocking) {
       total_waiting_for_wg_comm += weight_grad_datasets[data]->finish_tick -

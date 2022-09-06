@@ -48,8 +48,11 @@ void PacketBundle::send_to_NPU() {
 void PacketBundle::call(EventType event, CallData* data) {
   if (needs_processing == true) {
     needs_processing = false;
-    this->delay = generator->mem_write(size) + generator->mem_read(size) +
-        generator->mem_read(size);
+    this->delay = generator->mem_write(size) + generator->mem_read(size) + generator->mem_read(size);
+    // std::cout << "Mem call size: " << size << std::endl;
+    // std::cout << "Mem write: " << generator->mem_write(size) << std::endl;
+    // std::cout << "Mem read: " << generator->mem_read(size) << std::endl;
+    std::cout << "Mem delay: " << this->delay << std::endl;
     generator->try_register_event(
         this, EventType::CommProcessingFinished, data, this->delay);
     return;

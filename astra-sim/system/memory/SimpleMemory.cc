@@ -28,7 +28,9 @@ uint64_t SimpleMemory::npu_mem_read(uint64_t size) {
   npu_read_request_count++;
   // timespec_t time=NI->sim_get_time();
   // double time_ns=time.time_val;
-  double delay = (size / npu_access_bw_GB);
+  double delay = (size / npu_access_bw_GB) + access_latency;
+  // std::cout << "NPU Mem Read Delay - " << delay << std::endl;
+  // std::cout << "npu_access_bw_GB - " << npu_access_bw_GB << std::endl;
   /*if(time_ns+access_latency<last_request_serviced){
       double offset=(last_request_serviced+delay)-time_ns;
       last_request_serviced+=delay;
@@ -49,7 +51,8 @@ uint64_t SimpleMemory::SimpleMemory::npu_mem_write(uint64_t size) {
   npu_write_request_count++;
   // timespec_t time=NI->sim_get_time();
   // double time_ns=time.time_val;
-  double delay = (size / npu_access_bw_GB);
+  double delay = (size / npu_access_bw_GB) + access_latency;
+  // std::cout << "NPU Mem Write Delay - " << delay << std::endl;
   /*if(time_ns+access_latency<last_request_serviced){
       double offset=(last_request_serviced+delay)-time_ns;
       last_request_serviced+=delay;
