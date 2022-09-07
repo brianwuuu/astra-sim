@@ -24,6 +24,7 @@ AllToAll::AllToAll(
           direction,
           injection_policy,
           boost_mode) {
+  // std::cout << "[Test] Generate AllToAll collective." << std::endl;
   this->name = Name::AllToAll;
   this->enabled = true;
   this->middle_point = nodes_in_ring - 1;

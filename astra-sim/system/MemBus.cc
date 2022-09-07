@@ -48,10 +48,10 @@ void MemBus::send_from_NPU_to_MA(
     bool processed,
     bool send_back,
     Callable* callable) {
+  // std::cout << "NPU to MA" << std::endl;
   if (model_shared_bus && transmition == Transmition::Usual) {
     NPU_side->request_read(bytes, processed, send_back, callable);
   } else {
-    std::cout << "NPU to MA" << std::endl;
     if (transmition == Transmition::Fast) {
       generator->register_event(
           callable,
@@ -73,10 +73,10 @@ void MemBus::send_from_MA_to_NPU(
     bool processed,
     bool send_back,
     Callable* callable) {
+  // std::cout << "MA to NPU" << std::endl;
   if (model_shared_bus && transmition == Transmition::Usual) {
     MA_side->request_read(bytes, processed, send_back, callable);
   } else {
-    std::cout << "MA to NPU" << std::endl;
     if (transmition == Transmition::Fast) {
       generator->register_event(
           callable,

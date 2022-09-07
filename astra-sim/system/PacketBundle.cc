@@ -52,7 +52,7 @@ void PacketBundle::call(EventType event, CallData* data) {
     // std::cout << "Mem call size: " << size << std::endl;
     // std::cout << "Mem write: " << generator->mem_write(size) << std::endl;
     // std::cout << "Mem read: " << generator->mem_read(size) << std::endl;
-    std::cout << "Mem delay: " << this->delay << std::endl;
+    // std::cout << "Mem delay: " << this->delay << std::endl;
     generator->try_register_event(
         this, EventType::CommProcessingFinished, data, this->delay);
     return;

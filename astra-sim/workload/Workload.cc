@@ -75,7 +75,6 @@ Workload::Workload(
   }
 }
 void Workload::initialize_stat_files() {
-  std::cout << "what is this? " << SIZE << ", " << total_rows << std::endl;
   detailed->initialize_csv(SIZE * total_rows + 20, 50);
   end_to_end->initialize_csv(SIZE * total_rows + 20, 50);
 }
@@ -177,8 +176,10 @@ void Workload::check_for_sim_end() {
 void Workload::iterate_micro_benchmark() {
   assert(index >= 0);
   assert(index < SIZE);
+  // std::cout << "[Test] Iterate Micro benchmark" << std::endl;
   if (current_state != LoopState::Wait_For_Sim_Finish) {
     for (pass_counter = 0; pass_counter < TOTAL_PASS; pass_counter++) {
+      // std::cout << "[Test] Issue weight gradient communication for layer " << index << std::endl;
       layers[index]->issue_weight_grad_comm(
           SchedulingPolicy::None, CollectiveBarrier::Non_Blocking);
     }
