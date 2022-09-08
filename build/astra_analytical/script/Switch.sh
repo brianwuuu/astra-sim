@@ -3,9 +3,9 @@ set -e
 
 # workload=medium_DLRM
 # workload=microAllReduce
-workload=microData
+# workload=microData
 # workload=example_DATA
-# workload=MLP_ModelParallel
+workload=MLP_ModelParallel
 # workload=Resnet50_DataParallel
 # workload=Transformer_HybridParallel
 
@@ -33,6 +33,9 @@ if [ "${1:$result}" = "-dgx" ]; then
 elif [ "${1:$result}" = "-mem_multicast" ]; then
   NETWORK=${INPUT_DIR}/network/analytical/disaggregated_memory/mem_multicast.json
   SYSTEM=${INPUT_DIR}/system/mem_multicast_sys.txt
+elif [ "${1:$result}" = "-tpu_torus" ]; then
+  NETWORK=${INPUT_DIR}/network/analytical/disaggregated_memory/tpu_torus.json
+  SYSTEM=${INPUT_DIR}/system/tpu_torus_sys.txt
 fi
 
 # create result directory if doesn't exist
@@ -47,7 +50,7 @@ fi
 echo "[SCRIPT] Compiling AnalyticalAstra"
 # "${COMPILE_SCRIPT}" -c
 
-npus=(8) # 16 64 128 256 1024
+npus=(16) # 16 64 128 256 1024
 hbmbandwidth=(1000) # 16 32 64 128 256 512 1024 2048
 # hbmlatency=(100 1000 10000)
 # linkbandwidth=(50 100 500 1000)

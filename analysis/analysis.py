@@ -17,9 +17,9 @@ SCRIPT_DIRECTORY = ANALYTICAL_DIRECTORY + "/script/"
 ################################################################################################################
 ################################################################################################################
 # FILE SETUP
-workload = "MLP_ModelParallel" # microAllReduce, MLP_ModelParallel, Resnet50_DataParallel, Transformer_HybridParallel
+workload = "microData" # microAllReduce, MLP_ModelParallel, Resnet50_DataParallel, Transformer_HybridParallel
 topology_type = "switch"
-experiment = "hbmBandwidth"
+experiment = "dgx"
 experiment_directory = RESULT_DIRECTORY + "{}-{}-{}/".format(topology_type, workload, experiment)
 backend_dim_info_file = experiment_directory + "backend_dim_info.csv"
 backend_end_to_end_file = experiment_directory + "backend_end_to_end.csv"
@@ -29,20 +29,23 @@ end_to_end_file = experiment_directory + "EndToEnd.csv"
 ################################################################################################################
 
 # Simulation Parameter setup
-npus = [16, 64, 128, 256] # 16, 64, 128, 256, 512
-hbmbandwidths = [16, 64, 512] # 16, 32, 64, 128, 256, 512, 1024, 2048
+npus = [8] # 16, 64, 128, 256, 512
+hbmbandwidths = [1000] # 16, 32, 64, 128, 256, 512, 1024, 2048
 hbmlatencies = [100, 1000, 10000] # 100, 1000, 10000
 linklatencies = [100, 500, 1000, 5000, 10000] # 100, 500, 1000, 5000, 10000
 linkbandwidths = [50, 100, 500, 1000] # 50, 100, 200, 300, 500, 1000
 
 # params_1 = ("hbmlatency", hbmlatencies, "Link Latencies (ns)")
-params_1 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
+params_1 = ("npus", npus, "Number of NPUs")
 # params_1 = ("linklatency", linklatencies, "Link Latencies (ns)")
 # params_1 = ("linkbandwidth", linkbandwidths, "Link Bandwidth (GB/s)")
-params_2 = ("npus", npus, "Number of NPUs")
+params_2 = ("hbmbandwidth", hbmbandwidths, "HBM Bandwidth (GB/s)")
+
+def simpleAnalysis():
+    utils.plotHorizontalStackedBarChart()
 
 def analyzeEndToEnd():
-    layer = "layer_64_1_mlp0" # layer_64_1_mlp0
+    layer = "conv1" # layer_64_1_mlp0
     parameter = "workload_finished_at"
     file_fields, file_dict = utils.readEndToEndFile(end_to_end_file)
     parameter_index = file_fields.index(parameter)
@@ -54,7 +57,7 @@ def analyzeEndToEnd():
     x_bw = {"label": params_1[2], "data": params_1[1]}
     y_jct = {"label": "Job Completion Time (ns)", "data": jct_stats}
     path = ANALAYSIS_OUTPUT_DIRECTORY + "{}-{}-JCT-{}.png".format(topology_type, workload, params_2[0])
-    utils.plotMultiColBarChart(x_bw, y_jct, log=False, path=path)
+    utils.plotMultiColBarChart(x_bw, y_jct, log=False, path="")
 
 def analyzeBackendEndToEnd():
     file_fields, file_dict = utils.readBackendEndToEndFile(backend_end_to_end_file)
@@ -91,8 +94,9 @@ def analyzeDimensionUtilization():
 def main():
     print("[ANALYSIS] Starting analysis ...")
     print("[ANALYSIS] Workload: {}, Topology Type: {}".format(workload, topology_type))
+    simpleAnalysis()
     # analyzeEndToEnd()
-    analyzeBackendEndToEnd()
+    # analyzeBackendEndToEnd()
     # analyzeDimensionUtilization()
 
 if __name__ == '__main__':

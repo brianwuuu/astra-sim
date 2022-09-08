@@ -150,3 +150,19 @@ def plotMultiColStackedBarChart(x, y, log=False, path=""):
     plt.savefig(path)
     # plt.show()
     plt.close()
+    
+def plotHorizontalStackedBarChart():
+    fig, ax = plt.subplots(1,1,figsize=(8,2))
+    labels = ["TPU-Torus", "DGX-A100", "MMC"]
+    compute_time = [1082.45, 1082.45, 1082.45]
+    # exposed_comm_time = [20.893, 18.773, 15.589] # DP 8 CUs
+    # exposed_comm_time = [29.06, 15.628, 9.554] # DP 16 CUs
+    exposed_comm_time = [452.564, 117.914, 94.429] # Resnet 16 CUs
+    width = 0.35
+    ax.barh(labels, compute_time, width, label='Compute Time (us)')
+    ax.barh(labels, exposed_comm_time, width, left=compute_time,label='Exposed Comm Time (us)')
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.35))
+    ax.set_xlabel("Time (us)")
+    plt.tight_layout()
+    plt.show()
+    return
